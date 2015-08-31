@@ -1,7 +1,6 @@
 #coding: utf-8
 #!/usr/bin/python
 import argparse , sys, time, os, re, subprocess
-from threading import Thread
 
 """Conmon is network monitor which tracks the state of your Internet connection for given time and logs possible downtimes"""
    
@@ -41,16 +40,14 @@ class netmon(object):
         sys.stdout.write("\x1b7\x1b[%d;%df%s\x1b8" % (x, y, text))
         sys.stdout.flush()
         
-    def menu(self, *arg):
+    def menu(self):
+      
         if os.name == 'posix':
             os.system('clear')
         else:
             os.system('cls')
         self.print_pos(25, 5, self.color+"[!]Conmon is monitoring your Internet connection status"+self.end_color)
-        if len(arg) > 0:
-            self.t = int(arg[0])*60
-            self.countdown(self.t)
-        
+            
         
     def countdown(self, time_):
         self.time_ = int(time_)
@@ -93,6 +90,7 @@ class netmon(object):
         self.t = targ
         if os.name == 'posix':
             self.output = subprocess.check_output("ping -w 1 -c 1 "+self.t+" | grep icmp* | wc -l" , shell=True)
+            #output is 0 or 1
                   
         else:
             self.output_raw = subprocess.check_output("ping -n 1 " +self.t)
@@ -100,6 +98,7 @@ class netmon(object):
                 self.output = "1"
             else:
                 self.output = "0"
+           
             
         return self.output
             
@@ -109,11 +108,10 @@ class netmon(object):
         self.dns = dns
         self.up = True
         
-            
+        self.menu() 
         while time.time() < self.time_:
             if not self.dns:
                 self.ping_ = self.ping('8.8.8.8')
-                self.menu()
                 if '0' in self.ping_:
                     if self.up:
                         self.log('ping_down')
@@ -145,11 +143,7 @@ class netmon(object):
                               
     def main(self):
         self.t, self.i, self.d = self.arguments()
-        #self.thread = Thread(target = self.state, args = (self.t, self.i, self.b, self.d ))
-        #self.thread.start()
-        #self.menu(self.t)
-        self.state(self.t, self.i, self.d)
-        #self.thread.join()
+        self.state(self.t, self.i, self.d)#(time, interval ,dns)
         
         
         
