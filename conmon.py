@@ -1,4 +1,4 @@
-# coding: utf-8 
+#coding: utf-8
 #!/usr/bin/python
 import argparse , sys, time, os, re, subprocess
 from threading import Thread
@@ -21,7 +21,6 @@ class netmon(object):
         self.parser.add_argument("-d", "--dns", action='store_true', help="Keep track of dns status")
         self.args = self.parser.parse_args()
         self.dns = self.args.dns
-        self.bg = self.args.background
         self.montime = self.args.time
         self.i_val = self.args.interval
         if not self.montime or not self.i_val:
@@ -96,7 +95,11 @@ class netmon(object):
             self.output = subprocess.check_output("ping -w 1 -c 1 "+self.t+" | grep icmp* | wc -l" , shell=True)
                   
         else:
-            pass
+            self.output_raw = subprocess.check_output("ping -n 1 " +self.t)
+            if "Received = 1" in self.output_raw:
+                self.output = "1"
+            else:
+                self.output = "0"
             
         return self.output
             
