@@ -48,24 +48,13 @@ class netmon(object):
             os.system('cls')
         self.print_pos(25, 5, self.color+"[!]Conmon is monitoring your Internet connection status"+self.end_color)
             
-        
-    def countdown(self, time_):
-        self.time_ = int(time_)
-        while self.time_ > 0:
-            self.print_pos(37,6,"Time left --> "+str(self.time_)+" seconds")
-            time.sleep(1)
-            self.time_ -= 1
-            
-        
-    
-    
     def log(self, caller):
         self.int_down = ' --> Internet connection down.'
         self.dns_down = ' --> DNS failed - Internet connection up.'
         self.up_again = ' --> Connection up again.'
         self.c = caller
         if self.c == 'ping_down':
-           self.write_log(self.int_down)
+            self.write_log(self.int_down)
             
         elif self.c == 'ping_up_dns_down':
             self.write_log(self.dns_down)
